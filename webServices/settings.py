@@ -25,7 +25,7 @@ SECRET_KEY = 'ijy^!2!w_4bq&^7+@wbd+5o)39mh50j&ko+d$9f)i65830i27g'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['erp-college-services.herokuapp.com']
 
 
 # Application definition

@@ -1,1 +1,1 @@
-web: gunicorn ERP_College.wsgi -w 3 --max-requests 250 --preload
+web: gunicorn webServices.wsgi -w 3 --max-requests 250 --preload

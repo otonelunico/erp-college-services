@@ -4,7 +4,9 @@ from .views import QualificationViewSet, \
     QualificationStudentDetail, \
     Teacher_SubjectList, \
     AttorneyList, \
-    StudentList
+    StudentList, \
+    AttorneyDetail, \
+    StudentDetail
 from . import views
 
 # Normal Url
@@ -24,10 +26,13 @@ urlpatterns += [
 
 urlpatterns += [
     url(r'^attorney/$',AttorneyList.as_view(), name='attorney'),
+    url(r'^attorney/(?P<id>[0-9,-]+\d)/$', AttorneyDetail.as_view(), name='attorney_detail'),
+
 ]
 
 # Person student
 
 urlpatterns += [
     url(r'^student/$',StudentList.as_view(), name='attorney'),
+    url(r'^student/(?P<id>[0-9,-]+\d)/$', StudentDetail.as_view(), name='student_detail'),
 ]

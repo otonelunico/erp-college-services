@@ -40,7 +40,7 @@ urlpatterns += [
 urlpatterns += [
     url(r'^attorney/$',AttorneyList.as_view(), name='attorney_list'),
     url(r'^attorney/(?P<id>[0-9,-]+\d)/$', AttorneyDetail.as_view(), name='attorney_detail'),
-    url(r'^attorney_id/(?P<id>[0-9,-])/$', AttorneyDetailId.as_view(), name='attorney_detail_id'),
+    url(r'^attorney_id/(?P<id>\d+)/$', AttorneyDetailId.as_view(), name='attorney_detail_id'),
 
 ]
 
@@ -49,7 +49,7 @@ urlpatterns += [
 urlpatterns += [
     url(r'^student/$',StudentList.as_view(), name='student_list'),
     url(r'^student/(?P<id>[0-9,-]+\d)/$', StudentDetail.as_view(), name='student_detail'),
-    url(r'^student_id/(?P<id>[0-9,-])/$', StudentDetailId.as_view(), name='student_detail_id'),
+    url(r'^student_id/(?P<id>\d+)/$', StudentDetailId.as_view(), name='student_detail_id'),
 ]
 
 # Person teacher

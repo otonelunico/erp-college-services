@@ -75,7 +75,6 @@ class StudentSerializer(ModelSerializer):
                   'phone',
                   'cellphone',
                   'attorney',
-                  'grade',
                   )
 
 class EnrollmentSerializer(ModelSerializer):

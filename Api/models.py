@@ -41,7 +41,6 @@ class Attorney(Person):
 class Student(Person):
     attorney = models.ForeignKey(Attorney, null=False, blank=True, on_delete=models.CASCADE)
     #matricula = models.ForeignKey()
-    grade = models.ForeignKey(Grade, null=False, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
          return self.rut

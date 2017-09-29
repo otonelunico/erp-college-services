@@ -1,30 +1,53 @@
-from rest_framework.serializers import ModelSerializer, HyperlinkedModelSerializer
-from rest_framework import  serializers
-from .models import Qualification, Student, Attorney, Teacher_Subject
+from rest_framework.serializers import ModelSerializer
+from .models import Qualification, Student, Attorney, Teacher_Subject, Teacher, Enrollment, Grade
 
 class ListQualification(ModelSerializer):
-
     class Meta:
         model = Qualification
-        fields = ('teacher_subject', 'value')
-
+        fields = ('id',
+                  'teacher_subject',
+                  'value'
+                  )
 
 class QualificationSerializer(ModelSerializer):
     class Meta:
         model = Qualification
-        fields = ('student', 'teacher_subject', 'value', 'position', 'period')
-
+        fields = ('id',
+                  'student',
+                  'teacher_subject',
+                  'value',
+                  'position',
+                  'period'
+                  )
 
 class Teacher_SubjectSerializer(ModelSerializer):
     class Meta:
         model = Teacher_Subject
-        fields = ('subject', 'teacher')
-
+        fields = ('id',
+                  'subject',
+                  'teacher')
 
 class AttorneySerializer(ModelSerializer):
     class Meta:
         model = Attorney
-        fields = ('rut',
+        fields = ('id',
+                  'rut',
+                  'first_name',
+                  'last_name',
+                  'gender',
+                  'address',
+                  'email',
+                  'birthdate',
+                  'age',
+                  'phone',
+                  'cellphone',
+                  )
+
+class TeacherSerializer(ModelSerializer):
+    class Meta:
+        model = Teacher
+        fields = ('id',
+                  'rut',
                   'first_name',
                   'last_name',
                   'gender',
@@ -40,7 +63,8 @@ class AttorneySerializer(ModelSerializer):
 class StudentSerializer(ModelSerializer):
     class Meta:
         model = Student
-        fields = ('rut',
+        fields = ('id',
+                  'rut',
                   'first_name',
                   'last_name',
                   'gender',
@@ -54,3 +78,28 @@ class StudentSerializer(ModelSerializer):
                   'grade',
                   )
 
+class EnrollmentSerializer(ModelSerializer):
+    class Meta:
+        model = Enrollment
+        fields = ('id',
+                  'rode',
+                  'tariff',
+                  'monthly',
+                  'total',
+                  'remaining',
+                  'updated_at',
+                  'created_at',
+                  'grade',
+                  'period',
+                  'student'
+                  )
+
+class GradeSerializer(ModelSerializer):
+    class Meta:
+        model = Grade
+        fields = ('id',
+                  'name',
+                  'number',
+                  'latter',
+                  'level',
+                  )

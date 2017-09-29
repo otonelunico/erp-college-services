@@ -92,4 +92,5 @@ class Enrollment(models.Model):
     grade = models.ForeignKey(Grade, null=False, blank=True, on_delete=models.CASCADE)
     period = models.IntegerField(null=False)
     student = models.ForeignKey(Student, null=False, blank=True, on_delete=models.CASCADE)
+    payment = models.IntegerField(null=False)
 

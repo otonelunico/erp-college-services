@@ -271,6 +271,39 @@ class AttorneyDetail(APIView):
             return response.Response(serializer.data)
         return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class AttorneyDetailId(APIView):
+
+    def get_object(self, id):
+        try:
+            return Attorney.objects.get(id=id)
+        except Attorney.DoesNotExist:
+            raise Http404
+
+    def get(self, request, id, format=None):
+        model = self.get_object(id)
+        serializer = AttorneySerializer(model)
+        return response.Response(serializer.data)
+
+    def put(self, request, id, format=None):
+        model = self.get_object(id)
+        serializer = AttorneySerializer(model, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return response.Response(serializer.data)
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id, format=None):
+        model = self.get_object(id)
+        model.delete()
+        return response.Response(status=status.HTTP_204_NO_CONTENT)
+
+    def post(self, request, id, format=None):
+        serializer = AttorneySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return response.Response(serializer.data)
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class StudentList(APIView):
 
     def get(self, context, **response_kwargs):
@@ -291,6 +324,39 @@ class StudentDetail(APIView):
     def get_object(self, id):
         try:
             return Student.objects.get(rut=id)
+        except Student.DoesNotExist:
+            raise Http404
+
+    def get(self, request, id, format=None):
+        model = self.get_object(id)
+        serializer = StudentSerializer(model)
+        return response.Response(serializer.data)
+
+    def put(self, request, id, format=None):
+        model = self.get_object(id)
+        serializer = StudentSerializer(model, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return response.Response(serializer.data)
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id, format=None):
+        model = self.get_object(id)
+        model.delete()
+        return response.Response(status=status.HTTP_204_NO_CONTENT)
+
+    def post(self, request, id, format=None):
+        serializer = StudentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return response.Response(serializer.data)
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class StudentDetailId(APIView):
+
+    def get_object(self, id):
+        try:
+            return Student.objects.get(id=id)
         except Student.DoesNotExist:
             raise Http404
 

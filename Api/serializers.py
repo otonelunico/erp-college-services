@@ -90,7 +90,8 @@ class EnrollmentSerializer(ModelSerializer):
                   'created_at',
                   'grade',
                   'period',
-                  'student'
+                  'student',
+                  'payment'
                   )
 
 class GradeSerializer(ModelSerializer):

@@ -59,7 +59,6 @@ class TeacherSerializer(ModelSerializer):
                   'cellphone',
                   )
 
-
 class StudentSerializer(ModelSerializer):
     class Meta:
         model = Student

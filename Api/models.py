@@ -94,3 +94,5 @@ class Enrollment(models.Model):
     student = models.ForeignKey(Student, null=False, blank=True, on_delete=models.CASCADE)
     payment = models.IntegerField(null=False)
 
+    def __str__(self):
+        return str(self.student.rut+' '+self.student.first_name+' '+self.student.last_name)

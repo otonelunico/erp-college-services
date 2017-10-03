@@ -9,7 +9,8 @@ from .serializers import ListQualification, \
     StudentSerializer, \
     TeacherSerializer, \
     EnrollmentSerializer, \
-    GradeSerializer
+    GradeSerializer, \
+    SubjectSerializer
 from django.http import Http404, JsonResponse
 from rest_framework import viewsets
 from rest_framework import response
@@ -18,7 +19,7 @@ from rest_framework import status
 from django.core import serializers
 from django.http import HttpResponse
 from django.shortcuts import render
-from .models import Qualification,Student, Attorney, Teacher_Subject, Teacher, Enrollment, Grade
+from .models import Qualification,Student, Attorney, Teacher_Subject, Teacher, Enrollment, Grade, Subject
 
 from django.views.generic.list import ListView, BaseListView
 
@@ -39,12 +40,26 @@ class QualificationViewSet(APIView):
             return response.Response(serializer.data, status=status.HTTP_201_CREATED)
         return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class QualificationListStudentSubject(APIView):
+
+    def get(self, request, id, sub, format=None):
+        qualification = Qualification.objects.filter(student=id, teacher_subject=sub)
+        serializer = QualificationSerializer(qualification, many=True)
+        return response.Response(serializer.data)
+
+class QualificationListGradeSubject(APIView):
+
+    def get(self, request, grade, sub, format=None):
+        qualification = Qualification.objects.filter(student__enrollment__grade=grade, teacher_subject=sub)
+        serializer = QualificationSerializer(qualification, many=True)
+        return response.Response(serializer.data)
+
 class QualificationStudent(APIView):
 
     def get_object(self, id):
         try:
             student = Student.objects.get(rut=id).id
-            return Qualification.objects.filter(student=student)
+            return Qualification.objects.filter(student=student).order_by('student')
         except Qualification.DoesNotExist:
             raise Http404
 
@@ -63,32 +78,32 @@ class QualificationStudent(APIView):
 
 class QualificationStudentDetail(APIView):
 
-    def get_object(self, id, pk):
+    def get_object(self, id, pk, sub):
         try:
             student = Student.objects.get(rut=id).id
-            return Qualification.objects.get(student=student, position=pk)
+            return Qualification.objects.get(student=student, position=pk, teacher_subject=sub)
         except Qualification.DoesNotExist:
             raise Http404
 
-    def get(self, request, id, pk, format=None):
-        qualification = self.get_object(id, pk)
+    def get(self, request, id, pk, sub, format=None):
+        qualification = self.get_object(id, pk, sub )
         serializer = QualificationSerializer(qualification)
         return response.Response(serializer.data)
 
-    def put(self, request, id, pk, format=None):
-        qualification = self.get_object(id, pk)
+    def put(self, request, id, pk, sub, format=None):
+        qualification = self.get_object(id, pk, sub)
         serializer = QualificationSerializer(qualification, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return response.Response(serializer.data)
         return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, id, pk, format=None):
-        qualification = self.get_object(id, pk)
+    def delete(self, request, id, pk, sub, format=None):
+        qualification = self.get_object(id, pk, sub)
         qualification.delete()
         return response.Response(status=status.HTTP_204_NO_CONTENT)
 
-    def post(self, request, id, pk, format=None):
+    def post(self, request, id, pk, sub, format=None):
         serializer = QualificationSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -160,6 +175,39 @@ class Teacher_SubjectDetail(APIView):
         return response.Response(status=status.HTTP_204_NO_CONTENT)
 
     def post(self, request, rut, sub, format=None):
+        serializer = Teacher_SubjectSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return response.Response(serializer.data)
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class Teacher_SubjectDetailSub(APIView):
+
+    def get_object(self, sub):
+        try:
+            return Teacher_Subject.objects.get(subject=sub)
+        except Attorney.DoesNotExist:
+            raise Http404
+
+    def get(self, request, sub, format=None):
+        model = self.get_object(sub)
+        serializer = Teacher_SubjectSerializer(model)
+        return response.Response(serializer.data)
+
+    def put(self, request, sub, format=None):
+        model = self.get_object(sub)
+        serializer = Teacher_SubjectSerializer(model, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return response.Response(serializer.data)
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request,  sub, format=None):
+        model = self.get_object(sub)
+        model.delete()
+        return response.Response(status=status.HTTP_204_NO_CONTENT)
+
+    def post(self, request, sub, format=None):
         serializer = Teacher_SubjectSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -319,6 +367,13 @@ class StudentList(APIView):
             return response.Response(serializer.data, status=status.HTTP_201_CREATED)
         return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class StudentListGrade(APIView):
+
+    def get(self, context, grade, **response_kwargs):
+        model = Student.objects.filter(enrollment__grade=grade)
+        serializer = StudentSerializer(model, many=True)
+        return response.Response(serializer.data)
+
 class StudentDetail(APIView):
 
     def get_object(self, id):
@@ -394,6 +449,26 @@ class EnrollmentList(APIView):
         return response.Response(serializer.data)
 
     def post(self, request, format=None):
+        serializer = EnrollmentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return response.Response(serializer.data, status=status.HTTP_201_CREATED)
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class EnrollmentDetailGrade(APIView):
+
+    def get_object(self, grade):
+        try:
+            return Enrollment.objects.filter(grade=grade)
+        except Student.DoesNotExist:
+            raise Http404
+
+    def get(self, context, grade, **response_kwargs):
+        model = self.get_object(grade)
+        serializer = EnrollmentSerializer(model, many=True)
+        return response.Response(serializer.data)
+
+    def post(self, request, grade, format=None):
         serializer = EnrollmentSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -478,6 +553,54 @@ class GradeDetail(APIView):
 
     def post(self, request, id, format=None):
         serializer = GradeSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return response.Response(serializer.data)
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class SubjectList(APIView):
+
+    def get(self, context, **response_kwargs):
+        model = Subject.objects.all()
+        serializer = SubjectSerializer(model, many=True)
+
+        return response.Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = SubjectSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return response.Response(serializer.data, status=status.HTTP_201_CREATED)
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class SubjectDetail(APIView):
+
+    def get_object(self, id):
+        try:
+            return Subject.objects.get(id=id)
+        except Student.DoesNotExist:
+            raise Http404
+
+    def get(self, request, id, format=None):
+        model = self.get_object(id)
+        serializer = SubjectSerializer(model)
+        return response.Response(serializer.data)
+
+    def put(self, request, id, format=None):
+        model = self.get_object(id)
+        serializer = SubjectSerializer(model, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return response.Response(serializer.data)
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id, format=None):
+        model = self.get_object(id)
+        model.delete()
+        return response.Response(status=status.HTTP_204_NO_CONTENT)
+
+    def post(self, request, id, format=None):
+        serializer = SubjectSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return response.Response(serializer.data)

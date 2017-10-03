@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Qualification, Student, Attorney, Teacher_Subject, Teacher, Enrollment, Grade
+from .models import Qualification, Student, Attorney, Teacher_Subject, Teacher, Enrollment, Grade, Subject
 
 class ListQualification(ModelSerializer):
     class Meta:
@@ -101,4 +101,12 @@ class GradeSerializer(ModelSerializer):
                   'number',
                   'latter',
                   'level',
+                  )
+
+class SubjectSerializer(ModelSerializer):
+    class Meta:
+        model = Subject
+        fields = ('id',
+                  'name',
+                  'specialty',
                   )

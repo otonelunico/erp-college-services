@@ -57,7 +57,7 @@ class Grade(models.Model):
     number = models.IntegerField(null=False)
     latter = models.CharField(max_length=1, null=True)
     level = models.CharField(max_length=20, null=True)
-    teacher = models.ForeignKey(Teacher, null=False, blank=True, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(Teacher, null=False, blank=True, on_delete=models.CASCADE, default=1)
     def __str__(self):
         return self.name+' '+self.latter+' ' + self.level
 

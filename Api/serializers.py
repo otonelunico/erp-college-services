@@ -101,6 +101,7 @@ class GradeSerializer(ModelSerializer):
                   'number',
                   'latter',
                   'level',
+                  'teacher',
                   )
 
 class SubjectSerializer(ModelSerializer):

@@ -24,7 +24,11 @@ from .views import QualificationViewSet, \
     StudentListGrade, \
     QualificationListStudentSubject, \
     QualificationListGradeSubject, \
-    QualificationDetail
+    QualificationDetail,\
+    QualificationStudentId,\
+    EnrollmentDetailStudent,\
+    GradeDetailTeacher, \
+    TeacherDetailId
 
 # quialification
 urlpatterns = [
@@ -34,6 +38,9 @@ urlpatterns = [
     url(r'^quali/(?P<id>[0-9,-]+\d)/$',
         QualificationStudent.as_view(),
         name='quali_student'),
+    url(r'^quali_id/(?P<id>\d+)/$',
+        QualificationStudentId.as_view(),
+        name='quali_student_id'),
     url(r'^quali/(?P<id>[0-9,-]+\d)/(?P<sub>\d+)/(?P<pk>[0-9]+)/$',
         QualificationStudentDetail.as_view(),
         name='quali_student_detail'),
@@ -79,6 +86,7 @@ urlpatterns += [
 urlpatterns += [
     url(r'^teacher/$',TeacherList.as_view(), name='teacher_list'),
     url(r'^teacher/(?P<id>[0-9,-]+\d)/$', TeacherDetail.as_view(), name='teacher_detail'),
+    url(r'^teacher_id/(?P<id>\d+)/$', TeacherDetailId.as_view(), name='teacher_detail_id'),
 ]
 
 # Person teacher
@@ -86,14 +94,16 @@ urlpatterns += [
 urlpatterns += [
     url(r'^enrollment/$',EnrollmentList.as_view(), name='enrollment_list'),
     url(r'^enrollment/grade/(?P<grade>\d+)/$', EnrollmentDetailGrade.as_view(), name='enrollment_grade'),
-    url(r'^enrollment/(?P<id>[0-9]+)/$', EnrollmentDetail.as_view(), name='enrollment_detail'),
+    url(r'^enrollment/(?P<id>\d+)/$', EnrollmentDetail.as_view(), name='enrollment_detail'),
+    url(r'^enrollment_st/(?P<id>\d+)/$', EnrollmentDetailStudent.as_view(), name='enrollment_detail_student'),
 ]
 
 # Grade
 
 urlpatterns += [
     url(r'^grade/$',GradeList.as_view(), name='grade_list'),
-    url(r'^grade/(?P<id>[0-9]+)/$', GradeDetail.as_view(), name='grade_detail'),
+    url(r'^grade/(?P<id>\d+)/$', GradeDetail.as_view(), name='grade_detail'),
+    url(r'^grade_teacher/(?P<id>\d+)/$', GradeDetailTeacher.as_view(), name='grade_detail_teacer'),
     ]
 
 
@@ -101,6 +111,6 @@ urlpatterns += [
 
 urlpatterns += [
     url(r'^subject/$',SubjectList.as_view(), name='subject_list'),
-    url(r'^subject/(?P<id>[0-9]+)/$', SubjectDetail.as_view(), name='subject_detail'),
+    url(r'^subject/(?P<id>\d+)/$', SubjectDetail.as_view(), name='subject_detail'),
     ]
 

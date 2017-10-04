@@ -4,14 +4,6 @@ from django.contrib.auth.models import User
 ## test api
 
 
-class Grade(models.Model):
-    name = models.CharField(max_length=50, null=False)
-    number = models.IntegerField(null=False)
-    latter = models.CharField(max_length=1, null=True)
-    level = models.CharField(max_length=20, null=True)
-    def __str__(self):
-        return self.name+' '+self.latter+' ' + self.level
-
 
 class Person(models.Model):
     rut = models.CharField(max_length=10, unique=True)
@@ -58,6 +50,18 @@ class Teacher(Person):
 #
 #     def __str__(self):
 #         return self.rut
+
+
+class Grade(models.Model):
+    name = models.CharField(max_length=50, null=False)
+    number = models.IntegerField(null=False)
+    latter = models.CharField(max_length=1, null=True)
+    level = models.CharField(max_length=20, null=True)
+    teacher = models.ForeignKey(Teacher, null=False, blank=True, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.name+' '+self.latter+' ' + self.level
+
+
 
 class Subject(models.Model):
     name = models.CharField(max_length=50, null=False)

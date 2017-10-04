@@ -35,10 +35,16 @@ class QualificationViewSet(APIView):
 
     def post(self, request, format=None):
         serializer = QualificationSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return response.Response(serializer.data, status=status.HTTP_201_CREATED)
-        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if Qualification.objects.filter(period=request.data['period'],
+                                        teacher_subject=request.data['teacher_subject'],
+                                        student=request.data['student'],
+                                        ).count()<1:
+            if serializer.is_valid():
+                serializer.save()
+                return response.Response(serializer.data, status=status.HTTP_201_CREATED)
+            return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return response.Response(serializer.default_error_messages, status=status.HTTP_400_BAD_REQUEST)
 
 class QualificationListStudentSubject(APIView):
 
@@ -70,6 +76,39 @@ class QualificationStudent(APIView):
         return response.Response(serializer.data)
 
     def post(self, request, id, format=None):
+        serializer = QualificationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return response.Response(serializer.data)
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class QualificationDetail(APIView):
+
+    def get_object(self, id, pk, sub):
+        try:
+            return Qualification.objects.get(student=id, position=pk, teacher_subject=sub)
+        except Qualification.DoesNotExist:
+            raise Http404
+
+    def get(self, request, id, pk, sub, format=None):
+        qualification = self.get_object(id, pk, sub )
+        serializer = QualificationSerializer(qualification)
+        return response.Response(serializer.data)
+
+    def put(self, request, id, pk, sub, format=None):
+        qualification = self.get_object(id, pk, sub)
+        serializer = QualificationSerializer(qualification, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return response.Response(serializer.data)
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id, pk, sub, format=None):
+        qualification = self.get_object(id, pk, sub)
+        qualification.delete()
+        return response.Response(status=status.HTTP_204_NO_CONTENT)
+
+    def post(self, request, id, pk, sub, format=None):
         serializer = QualificationSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

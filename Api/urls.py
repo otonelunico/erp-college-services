@@ -23,7 +23,8 @@ from .views import QualificationViewSet, \
     EnrollmentDetailGrade, \
     StudentListGrade, \
     QualificationListStudentSubject, \
-    QualificationListGradeSubject
+    QualificationListGradeSubject, \
+    QualificationDetail
 
 # quialification
 urlpatterns = [
@@ -36,6 +37,9 @@ urlpatterns = [
     url(r'^quali/(?P<id>[0-9,-]+\d)/(?P<sub>\d+)/(?P<pk>[0-9]+)/$',
         QualificationStudentDetail.as_view(),
         name='quali_student_detail'),
+    url(r'^quali_detail/(?P<id>\d+)/(?P<sub>\d+)/(?P<pk>\d+)/$',
+        QualificationDetail.as_view(),
+        name='quali_detail'),
     url(r'^quali_sub/(?P<id>\d+)/(?P<sub>\d+)/$',
         QualificationListStudentSubject.as_view(),
         name='quali_student_detail_sub'),
